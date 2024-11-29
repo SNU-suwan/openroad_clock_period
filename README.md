@@ -16,6 +16,6 @@ The script accepts the following command-line arguments:
 - `-lb`: Lower bound relative to the clock period.
 - `-ub`: Upper bound relative to the clock period.
 
-### Example Usage
+## Example Usage
 ```bash
 python3 main.py -d gcd -p nangate45 -c 300 -lb -0.8 -ub 1.2
