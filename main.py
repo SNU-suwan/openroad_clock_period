@@ -123,7 +123,7 @@ def modify_constraint(args, clock_period):
 							tmp_file.write(f'set clk_period {clock_period}\n')
 							is_modified = True
 					else:
-						tmSDp_file.write(line)
+						tmp_file.write(line)
 		if is_modified:
 			utils.create_backups(constraint_dir)
 			os.system(f'mv {tmp_dir} {constraint_dir}')
