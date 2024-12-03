@@ -44,6 +44,7 @@ def modify_config(args):
 			with open(tmp_dir, 'w') as tmp_file:
 				lines = original_file.readlines()
 				util_found = False
+				util_param_found = False
 				for line in lines:
 					if line.startswith("export CORE_UTILIZATION") and args.utilization is not None:
 						if not line.startswith(f'export CORE_UTILIZATION = {args.utilization}'):
@@ -51,17 +52,35 @@ def modify_config(args):
 							tmp_file.write(f'export CORE_UTILIZATION = {args.utilization}\n')
 							util_found = True
 							is_modified = True
+						else:
+							tmp_file.write(line)
+						util_param_found = True
+					elif line.startswith("export FLOORPLAN_DEF") or line.startswith("export CORE_AREA") or line.startswith("export DIE_AREA"):
+						tmp_file.write(line)
+						util_param_found = True
 					elif line.startswith("export VERILOG_FILES"):
 						if not line.startswith(f'export VERILOG_FILES          = $(sort $(wildcard {FLOW_DIR}/designs/src/$(DESIGN_NAME)/*.v))\n'):
 							tmp_file.write(f'# {line}')
 							tmp_file.write(f'export VERILOG_FILES          = $(sort $(wildcard {FLOW_DIR}/designs/src/$(DESIGN_NAME)/*.v))\n')
 							is_modified = True
+						else:
+							tmp_file.write(line)
 					elif line.startswith("export SDC_FILE"):
 						if not line.startswith('export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n'):
 							tmp_file.write(f'# {line}')
 							tmp_file.write(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n')
-				else:
-					tmp_file.write(line)
+							is_modified = True
+						else:
+							tmp_file.write(line)
+					else:
+						tmp_file.write(line)
+
+				if not util_param_found:
+					if args.utilization is None:
+						print("[ERROR] Floorplan information is not given in config.mk nor as an argument.")
+						assert False
+					tmp_file.write(f'export CORE_UTILIZATION = {args.utilization}\n')
+					is_modified = True
 		if is_modified:
 			utils.create_backups(config_dir)
 			os.system(f'mv {tmp_dir} {config_dir}')
@@ -88,8 +107,7 @@ def modify_constraint(args, clock_period):
 	constraint_dir = os.path.join(DESIGN_DIR, 'constraint.sdc')
 	tmp_dir = os.path.join(DESIGN_DIR, 'tmp.sdc')
 
-	#if os.path.isfile(constraint_dir):
-	if True:
+	if os.path.isfile(constraint_dir):
 		is_modified = False
 		with open(constraint_dir, 'r') as original_file:
 			with open(tmp_dir, 'w') as tmp_file:
@@ -133,13 +151,13 @@ def modify_makefile(args, clock_period):
 				for line in template_makefile.readlines():
 					if line.startswith("DESIGN_CONFIG"):
 						target_makefile.write(f'# {line}')
-						target_makefile.write(f'export DESIGN_NAME = {args.design}\n')
+						#target_makefile.write(f'export DESIGN_NAME = {args.design}\n')
 						target_makefile.write(f'DESIGN_CONFIG = {DESIGN_DIR}/config.mk\n')
 					elif line.startswith("FLOW_HOME"):
 						target_makefile.write(f'FLOW_HOME := {FLOW_DIR}\n')
-					elif line.startswith("export PLATFORM_HOME"):
-						target_makefile.write(f'export PLATFORM = {args.platform}\n')
-						target_makefile.write(line)
+					#elif line.startswith("export PLATFORM_HOME"):
+					#	target_makefile.write(f'export PLATFORM = {args.platform}\n')
+					#	target_makefile.write(line)
 					elif line.startswith("export WORK_HOME"):
 						target_makefile.write(f'WORK_HOME := {FLOW_DIR}\n')
 					elif line.startswith("block"):
