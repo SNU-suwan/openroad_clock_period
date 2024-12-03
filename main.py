@@ -178,10 +178,10 @@ def run_openroad(args, clock_period, makefile_home):
 	'''
 	Run openroad from makefile.
 	'''
-	global STAGE_TO_EXTRACT_WORST_SLACK
-	result_dir = os.path.join(args.openroad_dir, "flow", "results", args.platform, args.design, str(clock_period))
-	odb_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
-	sdc_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
+	global STAGE_TO_EXTRACT_WORST_SLACK, RESULTS_DIR
+	
+	odb_dir = os.path.join(RESULTS_DIR, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
+	sdc_dir = os.path.join(RESULTS_DIR, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
 
 	if os.path.isfile(odb_dir) and os.path.isfile(sdc_dir):
 		print(f"{odb_dir} and {sdc_dir} exist! Skip running openroad.")
@@ -202,7 +202,7 @@ def run_openroad(args, clock_period, makefile_home):
  		print(f"An unexpected error occurred: {e}")
 
 
-	if not os.path.isdir(result_dir):
+	if not os.path.isdir(RESULTS_DIR):
  		print(f"[ERROR] Openroad run failed.")
 		#sys.exit(-1)
  		assert False
@@ -239,10 +239,10 @@ def report_worst_slack(args, clock_period):
 		os.system(f"mkdir -p {worst_slack_log_home}")
 	worst_slack_log_dir = os.path.join(worst_slack_log_home, "worst_slack.log")
 
-	odb_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
-	sdc_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
+	odb_dir = os.path.join(RESULTS_DIR, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
+	sdc_dir = os.path.join(RESULTS_DIR, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
 	if not os.path.isfile(sdc_dir):
-		sdc_dir = os.path.join(result_dir, "5_route.sdc")
+		sdc_dir = os.path.join(RESULTS_DIR, "5_route.sdc")
 		
 	if not os.path.isfile(worst_slack_log_dir):
 		report_worst_slack_tcl_dir = '_report_worst_slack.tcl'
