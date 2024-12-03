@@ -66,7 +66,7 @@ def modify_config(args):
 						else:
 							tmp_file.write(line)
 					elif line.startswith("export SDC_FILE"):
-						if not line.startswith('export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n'):
+						if not line.startswith(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n'):
 							tmp_file.write(f'# {line}')
 							tmp_file.write(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n')
 							is_modified = True
