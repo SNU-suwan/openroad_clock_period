@@ -9,7 +9,7 @@ DESIGN_DIR = None
 FLOW_DIR = None
 RESULTS_DIR = None
 
-STAGE_TO_EXTRACT_WORST_SLACK = "5_route"
+STAGE_TO_EXTRACT_WORST_SLACK = "6_final"
 
 def get_args():
 	parser = argparse.ArgumentParser(description='Identify clock period', formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -182,6 +182,8 @@ def run_openroad(args, clock_period, makefile_home):
 	result_dir = os.path.join(args.openroad_dir, "flow", "results", args.platform, args.design, str(clock_period))
 	odb_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
 	sdc_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
+	if not os.path.isfile(sdc_dir):
+		sdc_dir = os.path.join(result_dir, "5_route.sdc")
 	
 	if os.path.isfile(odb_dir) and os.path.isfile(sdc_dir):
 		print(f"{odb_dir} and {sdc_dir} exist! Skip running openroad.")
