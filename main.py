@@ -63,16 +63,16 @@ def modify_config(args):
 						tmp_file.write(line)
 						util_param_found = True
 					elif line.startswith("export VERILOG_FILES"):
-						if not line.startswith(f'export VERILOG_FILES          = $(sort $(wildcard {FLOW_DIR}/designs/src/$(DESIGN_NAME)/*.v))\n'):
+						if not line.startswith(f'export VERILOG_FILES          = $(sort $(wildcard {FLOW_DIR}/designs/src/$(DESIGN_NICKNAME)/*.v))\n'):
 							tmp_file.write(f'# {line}')
-							tmp_file.write(f'export VERILOG_FILES          = $(sort $(wildcard {FLOW_DIR}/designs/src/$(DESIGN_NAME)/*.v))\n')
+							tmp_file.write(f'export VERILOG_FILES          = $(sort $(wildcard {FLOW_DIR}/designs/src/$(DESIGN_NICKNAME)/*.v))\n')
 							is_modified = True
 						else:
 							tmp_file.write(line)
 					elif line.startswith("export SDC_FILE"):
-						if not line.startswith('export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n'):
+						if not line.startswith('export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NICKNAME)/constraint.sdc\n'):
 							tmp_file.write(f'# {line}')
-							tmp_file.write(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n')
+							tmp_file.write(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NICKNAME)/constraint.sdc\n')
 							is_modified = True
 						else:
 							tmp_file.write(line)
@@ -123,7 +123,7 @@ def modify_constraint(args, clock_period):
 							tmp_file.write(f'set clk_period {clock_period}\n')
 							is_modified = True
 					else:
-						tmp_file.write(line)
+						tmSDp_file.write(line)
 		if is_modified:
 			utils.create_backups(constraint_dir)
 			os.system(f'mv {tmp_dir} {constraint_dir}')
