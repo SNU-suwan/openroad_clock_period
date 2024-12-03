@@ -46,6 +46,9 @@ def modify_config(args):
 				util_found = False
 				util_param_found = False
 				for line in lines:
+					if line.startswith("export DESIGN_NAME"):
+						args.design = info[-1]
+						tmp_File.write(line)
 					if line.startswith("export CORE_UTILIZATION") and args.utilization is not None:
 						if not line.startswith(f'export CORE_UTILIZATION = {args.utilization}'):
 							tmp_file.write(f'# {line}')
