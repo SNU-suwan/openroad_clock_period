@@ -49,7 +49,7 @@ def modify_config(args):
 					if line.startswith("export DESIGN_NAME"):
 						info = line.split()
 						args.design = info[-1]
-						tmp_File.write(line)
+						tmp_file.write(line)
 					elif line.startswith("export CORE_UTILIZATION") and args.utilization is not None:
 						if not line.startswith(f'export CORE_UTILIZATION = {args.utilization}'):
 							tmp_file.write(f'# {line}')
