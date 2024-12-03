@@ -55,7 +55,7 @@ def modify_config(args):
 						else:
 							tmp_file.write(line)
 						util_param_found = True
-					elif line.startswith("export FLOORPLAN_DEF") or line.startswith("export CORE_AREA") or line.startswith("export DIE_AREA"):
+					elif line.startswith("export CORE_UTILIZATION") or line.startswith("export FLOORPLAN_DEF") or line.startswith("export CORE_AREA") or line.startswith("export DIE_AREA"):
 						tmp_file.write(line)
 						util_param_found = True
 					elif line.startswith("export VERILOG_FILES"):
