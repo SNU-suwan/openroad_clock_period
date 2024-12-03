@@ -72,10 +72,12 @@ def modify_config(args):
 		if not util_found and args.utilization is not None:
 			print(f"[ERROR] Config file, {config_dir}, does not include CORE_UTILIZATION.")
 			print(" Utilization cannot be changed.")
-			sys.exit(-1)
+			#sys.exit(-1)
+			assert False
 	else:
 		print(f"[ERROR] {config_dir} not exists.")
-		sys.exit(-1)
+		#sys.exit(-1)
+		assert False
 
 
 def modify_constraint(args, clock_period):
@@ -108,7 +110,8 @@ def modify_constraint(args, clock_period):
 			os.system(f'rm {tmp_dir}')
 	else:
 		print(f"[ERROR] {constraint_dir} not exists.")
-		sys.exit(-1)
+		#sys.exit(-1)
+		assert False
 
 def modify_makefile(args, clock_period):
 	'''
@@ -122,16 +125,21 @@ def modify_makefile(args, clock_period):
 	makefile_template_dir = os.path.join(os.getcwd(), "Makefile_template")
 	custom_makefile_dir = os.path.join(custom_makefile_home, "Makefile")
 
-	if not os.path.isfile(custom_makefile_dir):
+	#if not os.path.isfile(custom_makefile_dir):
+	if True:
 		FLOW_DIR = os.path.join(args.openroad_dir, 'flow')
 		with open(makefile_template_dir, 'r') as template_makefile:
 			with open(custom_makefile_dir, 'w') as target_makefile:
 				for line in template_makefile.readlines():
 					if line.startswith("DESIGN_CONFIG"):
 						target_makefile.write(f'# {line}')
+						target_makefile.write(f'export DESIGN_NAME = {args.design}\n')
 						target_makefile.write(f'DESIGN_CONFIG = {DESIGN_DIR}/config.mk\n')
 					elif line.startswith("FLOW_HOME"):
 						target_makefile.write(f'FLOW_HOME := {FLOW_DIR}\n')
+					elif line.startswith("export PLATFORM_HOME"):
+						target_makefile.write(f'export PLATFORM = {args.platform}\n')
+						target_makefile.write(line)
 					elif line.startswith("export WORK_HOME"):
 						target_makefile.write(f'WORK_HOME := {FLOW_DIR}\n')
 					elif line.startswith("block"):
@@ -174,6 +182,13 @@ def run_openroad(args, clock_period, makefile_home):
 		print("Error: The 'make' command is not available. Ensure it is installed and in the PATH.")
 	except Exception as e:
  		print(f"An unexpected error occurred: {e}")
+
+
+	if not os.path.isdir(result_dir):
+ 		print(f"[ERROR] Openroad run failed.")
+		#sys.exit(-1)
+ 		assert False
+
 
 
 def set_global_variables(args, clock_period):
@@ -230,6 +245,8 @@ def obtain_worst_slack(args, clock_period):
 				worst_slack = float(info[-1])
 	if worst_slack is None:
 		print(f"[ERROR] {worst_slack_log_dir} does not have worst_slack.")
+		#sys.exit(-1)
+		assert False
 	
 	return worst_slack
 
@@ -284,7 +301,8 @@ if __name__ == "__main__":
 			clock_period -= (worst_slack - mid_point)
 		
 		if clock_period < 0:
-			sys.exit(-1)
+			#sys.exit(-1)
+			assert False
 
 		print(f"Clock period changed to {clock_period}.")
 
