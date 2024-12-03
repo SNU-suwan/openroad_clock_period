@@ -285,7 +285,7 @@ if __name__ == "__main__":
 	DESIGN_DIR = os.path.join(args.openroad_dir, 'flow', 'designs', args.platform, args.design)
 	FLOW_DIR = os.path.join(args.openroad_dir, 'flow')
 	if not os.path.isfile("Makefile_template"):
-		os.system(f"cp {args.openroad_dir}/flow/Makefile ./")
+		os.system(f"cp {args.openroad_dir}/flow/Makefile ./Makefile_template")
 
 	modify_config(args) # Set utilization
 
