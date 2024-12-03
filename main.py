@@ -66,7 +66,7 @@ def modify_config(args):
 						else:
 							tmp_file.write(line)
 					elif line.startswith("export SDC_FILE"):
-						if not line.startswith(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n'):
+						if not line.startswith('export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n'):
 							tmp_file.write(f'# {line}')
 							tmp_file.write(f'export SDC_FILE               = {FLOW_DIR}/designs/$(PLATFORM)/$(DESIGN_NAME)/constraint.sdc\n')
 							is_modified = True
@@ -282,6 +282,8 @@ if __name__ == "__main__":
 
 	DESIGN_DIR = os.path.join(args.openroad_dir, 'flow', 'designs', args.platform, args.design)
 	FLOW_DIR = os.path.join(args.openroad_dir, 'flow')
+	if not os.path.isfile("Makefile_template"):
+		os.system(f"cp {args.openroad_dir}/flow/Makefile ./")
 
 	modify_config(args) # Set utilization
 
