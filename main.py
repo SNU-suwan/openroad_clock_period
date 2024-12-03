@@ -182,9 +182,7 @@ def run_openroad(args, clock_period, makefile_home):
 	result_dir = os.path.join(args.openroad_dir, "flow", "results", args.platform, args.design, str(clock_period))
 	odb_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
 	sdc_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
-	if not os.path.isfile(sdc_dir):
-		sdc_dir = os.path.join(result_dir, "5_route.sdc")
-	
+
 	if os.path.isfile(odb_dir) and os.path.isfile(sdc_dir):
 		print(f"{odb_dir} and {sdc_dir} exist! Skip running openroad.")
 		return
@@ -241,11 +239,17 @@ def report_worst_slack(args, clock_period):
 		os.system(f"mkdir -p {worst_slack_log_home}")
 	worst_slack_log_dir = os.path.join(worst_slack_log_home, "worst_slack.log")
 
+	odb_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.odb")
+	sdc_dir = os.path.join(result_dir, f"{STAGE_TO_EXTRACT_WORST_SLACK}.sdc")
+	if not os.path.isfile(sdc_dir):
+		sdc_dir = os.path.join(result_dir, "5_route.sdc")
+		
 	if not os.path.isfile(worst_slack_log_dir):
 		report_worst_slack_tcl_dir = '_report_worst_slack.tcl'
 		with open(report_worst_slack_tcl_dir, 'w') as f:
 			f.write(f"source $::env(SCRIPTS_DIR)/load.tcl\n")
-			f.write(f"load_design {STAGE_TO_EXTRACT_WORST_SLACK}.odb {STAGE_TO_EXTRACT_WORST_SLACK}.sdc\n")
+			#f.write(f"load_design {STAGE_TO_EXTRACT_WORST_SLACK}.odb {STAGE_TO_EXTRACT_WORST_SLACK}.sdc\n")
+			f.write(f"load_design {odb_dir} {sdc_dir}\n")
 			f.write(f"report_worst_slack \n")
 			f.write(f"exit\n")		
 
